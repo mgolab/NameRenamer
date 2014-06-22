@@ -81,8 +81,8 @@ public class RenamerGUI {
 		JPanel filmBoxPanel = new JPanel();
 		filmBoxPanel.setLayout(new GridLayout(8,1));
 
-		final JTextField filmExtField = new JTextField("mp4",30);
-		final JTextField filmPath = new JTextField("E:\\Torrent\\Brak napisów\\",30);
+		final JTextField filmExtField = new JTextField("",30);
+		final JTextField filmPath = new JTextField("",30);
 
 		filmBoxPanel.add(new JLabel("Rozszerzenie:"));
 		filmBoxPanel.add(filmExtField);
@@ -92,17 +92,17 @@ public class RenamerGUI {
 		JPanel picturesFilmBoxPanel = new JPanel();
 		picturesFilmBoxPanel.setLayout(new GridLayout(8,1));
 
-		final JTextField pictureFilmExtField = new JTextField("jpg",30);
-		final JTextField pictureFilmPath = new JTextField("E:\\Torrent\\Brak napisów\\",30);
+		final JTextField pictureFilmExtField = new JTextField("",30);
+		final JTextField pictureFilmPath = new JTextField("",30);
 
 		picturesFilmBoxPanel.add(new JLabel("Rozszerzenie:"));
 		picturesFilmBoxPanel.add(pictureFilmExtField);
 		picturesFilmBoxPanel.add(new JLabel("Ścieżka do folderu z plikami:"));
 		picturesFilmBoxPanel.add(pictureFilmPath);
 
-		final JTextField serialExtField = new JTextField("srt",30);
-		final JTextField serialPath = new JTextField("E:\\Torrent\\Seriale\\",30);
-		final JTextField serialExcelPath = new JTextField("E:\\Torrent\\Seriale\\Serials.xls",30);
+		final JTextField serialExtField = new JTextField("",30);
+		final JTextField serialPath = new JTextField("",30);
+		final JTextField serialExcelPath = new JTextField("",30);
 
 		JPanel serialBoxPanel = new JPanel();
 		serialBoxPanel.setLayout(new GridLayout(8,1));
@@ -114,10 +114,10 @@ public class RenamerGUI {
 		serialBoxPanel.add(new JLabel("Ścieżka do pliku Excela:"));
 		serialBoxPanel.add(serialExcelPath);
 
-		final JTextField picturesExtField = new JTextField("jpg",30);
-		final JTextField picturesPath = new JTextField("E:\\Rogal\\",30);
-		final JTextField pictureOne = new JTextField("E:\\Rogal\\qwe.jpg",30);
-		final JTextField pictureTwo = new JTextField("E:\\Rogal\\asd.jpg",30);
+		final JTextField picturesExtField = new JTextField("",30);
+		final JTextField picturesPath = new JTextField("",30);
+		final JTextField pictureOne = new JTextField("",30);
+		final JTextField pictureTwo = new JTextField("",30);
 
 		JPanel picturesBoxPanel = new JPanel();
 		picturesBoxPanel.setLayout(new GridLayout(8,1));
