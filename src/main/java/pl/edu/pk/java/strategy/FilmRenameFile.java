@@ -24,7 +24,7 @@ public class FilmRenameFile {
 		}
 		System.out.println(newName);
 		// Zmieniamy nazwę
-		//file.renameTo(plik);
+		file.renameTo(plik);
 		return newName;
 	}
 
@@ -38,12 +38,7 @@ public class FilmRenameFile {
 		name = name.substring(0,i).replace(".", " ");
 		return name;
 	}
-
-	/**
-	 * Sprawdza, czy String jest liczbą
-	 * @param str String ze znakami
-	 * @return Zwraca wartość true jeśli str jest liczbą
-	 */
+	
 	public static boolean isNumeric(String str)
 	{
 		return str.matches("-?\\d+(\\.\\d+)?");

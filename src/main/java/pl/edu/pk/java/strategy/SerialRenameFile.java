@@ -4,18 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 import pl.edu.pk.java.decorator.NameDecorator;
-/** 
- * Klasa zmieniająca nazwę plików
- * @author Michał Gołąb
- * @version 1.0
- */
+
 public class SerialRenameFile {
-	/**
-	 * Zmienia nazwę pliku
-	 * @param file Ścieżka do pliku, któremu zmieniamy nazwę
-	 * @param ext Rozszerzenie pliku
-	 * @param excelPath Ścieżka do pliku Excela zawierającego nazwy seriali i tytuły odcinków
-	 */
 	public static String renameFile(File file, String ext, String excelPath){
 		String name = file.getName();
 		String path = file.getParent();
@@ -48,7 +38,7 @@ public class SerialRenameFile {
 		}
 		System.out.println(newName);
 		// Zmieniamy nazwę
-		//file.renameTo(plik);
+		file.renameTo(plik);
 		return newName;
 	}
 	
@@ -100,11 +90,6 @@ public class SerialRenameFile {
 		return name;
 	}
 	
-	/**
-	 * Sprawdza, czy String jest liczbą
-	 * @param str String ze znakami
-	 * @return Zwraca wartość true jeśli str jest liczbą
-	 */
 	public static boolean isNumeric(String str)
 	{
 		return str.matches("-?\\d+(\\.\\d+)?");
