@@ -42,7 +42,7 @@ public class FilmRenameFile {
 		return newName;
 	}
 
-	public static void NameExtractor(){
+	public void NameExtractor(){
 		int i = 0;
 		for (i = 3; i<name.length()-1; i++){
 			if(isNumeric(name.substring(i+1,i+2))){
@@ -55,5 +55,9 @@ public class FilmRenameFile {
 	public static boolean isNumeric(String str)
 	{
 		return str.matches("-?\\d+(\\.\\d+)?");
+	}
+	
+	public String getName(){
+		return name;
 	}
 } ///:~

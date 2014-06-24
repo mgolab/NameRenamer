@@ -57,9 +57,9 @@ public class SerialRenameFile {
 		return newName;
 	}
 	
-	public static void CutTheYear(){
+	public void CutTheYear(){
 		int i = 0;
-		for (i = 3; i < name.length()-1; i++){
+		for (i = 3; i < name.length()-3; i++){
 			int j = 0;
 			while(isNumeric(name.substring(i+j+1,i+j+2))){
 				j++;
@@ -70,7 +70,7 @@ public class SerialRenameFile {
 		}
 	}
 	
-	public static void NameLength(){
+	public void NameLength(){
 		int i;
 		for (i = 0; i < name.length()-1; i++){
 			if(isNumeric(name.substring(i+1,i+2)) && isNumeric(name.substring(i+2,i+3))){
@@ -87,7 +87,7 @@ public class SerialRenameFile {
 		length = i;
 	}
 	
-	public static void EpisodeNumberExtractor(){
+	public void EpisodeNumberExtractor(){
 		int j = length;
 		while (isNumeric(name.substring(j+1,j+2)) || isNumeric(name.substring(j+2,j+3))){
 			j++;
@@ -95,7 +95,7 @@ public class SerialRenameFile {
 		episodeNumber = Integer.parseInt(name.substring(j-1,j+1));
 	}
 	
-	public static void NameExtractor() {
+	public void NameExtractor() {
 		int i;
 		name = name.substring(0, length-1);
 		name = name.substring(0,1).toUpperCase() + name.substring(1);
@@ -120,4 +120,13 @@ public class SerialRenameFile {
 	{
 		return str.matches("-?\\d+(\\.\\d+)?");
 	}
+	
+	public String getName(){
+		return name;
+	}
+	
+	public int getEpisodeNumber(){
+		return episodeNumber;
+	}
+	
 } ///:~
