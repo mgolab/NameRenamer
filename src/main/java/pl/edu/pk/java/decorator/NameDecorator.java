@@ -12,7 +12,7 @@ public class NameDecorator {
 
 	private String inputFile;
 
-	public void setInputFile(String inputFile) {
+	public NameDecorator(String inputFile) {
 		this.inputFile = inputFile;
 	}
 	

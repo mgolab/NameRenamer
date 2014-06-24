@@ -46,6 +46,7 @@ public class RenamerGUI {
 	private void prepareGUI(){
 		mainFrame = new JFrame("Name Renamer");
 		mainFrame.setSize(400,600);
+		mainFrame.setResizable(false);
 		mainFrame.setLayout(new GridLayout(2, 1));
 
 		//headerLabel = new JLabel("",JLabel.CENTER );
@@ -81,8 +82,8 @@ public class RenamerGUI {
 		JPanel filmBoxPanel = new JPanel();
 		filmBoxPanel.setLayout(new GridLayout(8,1));
 
-		final JTextField filmExtField = new JTextField("",30);
-		final JTextField filmPath = new JTextField("",30);
+		final JTextField filmExtField = new JTextField("mp4",30);
+		final JTextField filmPath = new JTextField("E:\\Torrent\\Brak napisów\\",30);
 
 		filmBoxPanel.add(new JLabel("Rozszerzenie:"));
 		filmBoxPanel.add(filmExtField);
@@ -92,17 +93,17 @@ public class RenamerGUI {
 		JPanel picturesFilmBoxPanel = new JPanel();
 		picturesFilmBoxPanel.setLayout(new GridLayout(8,1));
 
-		final JTextField pictureFilmExtField = new JTextField("",30);
-		final JTextField pictureFilmPath = new JTextField("",30);
+		final JTextField pictureFilmExtField = new JTextField("jpg",30);
+		final JTextField pictureFilmPath = new JTextField("E:\\Torrent\\Brak napisów\\",30);
 
 		picturesFilmBoxPanel.add(new JLabel("Rozszerzenie:"));
 		picturesFilmBoxPanel.add(pictureFilmExtField);
 		picturesFilmBoxPanel.add(new JLabel("Ścieżka do folderu z plikami:"));
 		picturesFilmBoxPanel.add(pictureFilmPath);
 
-		final JTextField serialExtField = new JTextField("",30);
-		final JTextField serialPath = new JTextField("",30);
-		final JTextField serialExcelPath = new JTextField("",30);
+		final JTextField serialExtField = new JTextField("txt",30);
+		final JTextField serialPath = new JTextField("E:\\Torrent\\Seriale\\",30);
+		final JTextField serialExcelPath = new JTextField("E:\\Torrent\\Seriale\\Serials.xls",30);
 
 		JPanel serialBoxPanel = new JPanel();
 		serialBoxPanel.setLayout(new GridLayout(8,1));
@@ -114,10 +115,10 @@ public class RenamerGUI {
 		serialBoxPanel.add(new JLabel("Ścieżka do pliku Excela:"));
 		serialBoxPanel.add(serialExcelPath);
 
-		final JTextField picturesExtField = new JTextField("",30);
-		final JTextField picturesPath = new JTextField("",30);
-		final JTextField pictureOne = new JTextField("",30);
-		final JTextField pictureTwo = new JTextField("",30);
+		final JTextField picturesExtField = new JTextField("jpg",30);
+		final JTextField picturesPath = new JTextField("E:\\Pics\\cellphone\\",30);
+		final JTextField pictureOne = new JTextField("E:\\Pics\\late.jpg",30);
+		final JTextField pictureTwo = new JTextField("E:\\Pics\\good.jpg",30);
 
 		JPanel picturesBoxPanel = new JPanel();
 		picturesBoxPanel.setLayout(new GridLayout(8,1));
@@ -191,7 +192,8 @@ public class RenamerGUI {
 							public void process(File file, String ext) {
 								if(file.getName().contains("YIFY")){
 									statusText.append("Znaleziono plik: " + file + newline);
-									statusText.append("Zamieniono na: " + FilmRenameFile.renameFile(file,ext) + newline);
+									FilmRenameFile film = new FilmRenameFile(file,ext);
+									statusText.append("Zamieniono na: " + film.renameFile() + newline);
 								}
 							}
 						}, ext).start(path);
@@ -221,7 +223,8 @@ public class RenamerGUI {
 							public void process(File file, String ext) {
 								if(!file.getName().contains(" ")){
 									statusText.append(file + newline);
-									statusText.append(SerialRenameFile.renameFile(file,ext, excelPath) + newline);
+									SerialRenameFile serial = new SerialRenameFile(file,ext);
+									statusText.append(serial.renameFile(excelPath) + newline);
 								}
 							}
 						}, ext).start(path);
@@ -234,26 +237,21 @@ public class RenamerGUI {
 					picTwo = pictureTwo.getText();
 					File fileOne = new File(picOne);
 					File fileTwo = new File(picTwo);
-					System.out.println(fileOne.lastModified());
-					System.out.println(fileTwo.lastModified());
 					final long difference = fileOne.lastModified() - fileTwo.lastModified() + 1;
-					//System.out.println(difference);
-					//System.out.println(fileTwo.lastModified()+difference);
 					if (!ext.equals("") && !path.equals("") && !picOne.equals("") && !picTwo.equals("")){
-						System.out.println("Pierwsze");
 						new NameRenamer(new NameRenamer.Strategy() {
 							public void process(File file, String ext) {
 								statusText.append(file + newline);
-								statusText.append(PictureSynchronizeFiles.renameFile(file,ext, difference) + newline);
+								PictureSynchronizeFiles synchro = new PictureSynchronizeFiles(file,ext);
+								statusText.append(synchro.renameFile(difference) + newline);
 							}
 						}, ext).start(path);
 					}
 					else if (!ext.equals("") && !path.equals("")){
-						System.out.println("Drugie");
 						new NameRenamer(new NameRenamer.Strategy() {
 							public void process(File file, String ext) {
-								statusText.append(file + newline);
-								statusText.append(PictureSynchronizeFiles.renameFile(file,ext, 0) + newline);
+								PictureSynchronizeFiles synchro = new PictureSynchronizeFiles(file,ext);
+								statusText.append(synchro.renameFile(0) + newline);
 							}
 						}, ext).start(path);
 					}

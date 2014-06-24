@@ -1,16 +1,30 @@
+//: renamer/FilmRenameFile.java
 package pl.edu.pk.java.strategy;
 
 import java.io.File;
 import java.io.IOException;
 
 public class FilmRenameFile {
-	public static String renameFile(File file, String ext){
-		String name = file.getName();
-		String path = file.getParent();
+	
+	private static File file;
+	private static String name;
+	private static String path;
+	private static String ext;
+	
+	@SuppressWarnings("static-access")
+	public FilmRenameFile(File file, String ext) {
+		this.file = file;
+		this.name = file.getName();
+		this.path = file.getParent();
+		this.ext = ext;
+	}
+	
+	public String renameFile(){
 		String newName = null;
+		@SuppressWarnings("unused")
 		File plik = null;
 
-		name = NameExtractor(name);
+		NameExtractor();
 
 		// Tworzymy nową nazwę wraz z rozszerzeniem
 		newName = path + "\\" + name + "." + ext;
@@ -24,11 +38,11 @@ public class FilmRenameFile {
 		}
 		System.out.println(newName);
 		// Zmieniamy nazwę
-		file.renameTo(plik);
+		//file.renameTo(plik);
 		return newName;
 	}
 
-	public static String NameExtractor(String name){
+	public static void NameExtractor(){
 		int i = 0;
 		for (i = 3; i<name.length()-1; i++){
 			if(isNumeric(name.substring(i+1,i+2))){
@@ -36,7 +50,6 @@ public class FilmRenameFile {
 			}
 		}
 		name = name.substring(0,i).replace(".", " ");
-		return name;
 	}
 	
 	public static boolean isNumeric(String str)

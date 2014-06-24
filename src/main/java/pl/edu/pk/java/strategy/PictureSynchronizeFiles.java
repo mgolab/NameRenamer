@@ -1,13 +1,22 @@
 package pl.edu.pk.java.strategy;
 
 import java.io.File;
-import java.io.IOException;
 
 public class PictureSynchronizeFiles {
-	public static String renameFile(File file, String ext, long difference){
-		long name = file.lastModified();
-		//String name = file.getName();
-		String path = file.getParent();
+	
+	private static File file;
+	private static long name;
+	private static String path;
+	private static String ext;
+	
+	@SuppressWarnings("static-access")
+	public PictureSynchronizeFiles(File file, String ext) {
+		this.file = file;
+		this.name = file.lastModified();
+		this.path = file.getParent();
+		this.ext = ext;
+	}	
+	public String renameFile(long difference){
 		String newName = null;
 		File plik = null;
 		
@@ -17,12 +26,13 @@ public class PictureSynchronizeFiles {
 		plik=new File(newName);
 		try {
 			File.createTempFile(newName,ext);
-		} catch (IOException e1) {
+		} catch (Exception e1) {
 			System.out.println(e1.getMessage());
 			return "ERROR!!! " + name + ": " + e1.getMessage();
 		}
 		System.out.println(newName);
 		// Zmieniamy nazwę
+		file.setLastModified(name+difference);
 		file.renameTo(plik);
 		return newName;
 	}

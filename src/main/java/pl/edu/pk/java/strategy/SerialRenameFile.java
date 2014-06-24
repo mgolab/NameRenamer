@@ -6,20 +6,35 @@ import java.io.IOException;
 import pl.edu.pk.java.decorator.NameDecorator;
 
 public class SerialRenameFile {
-	public static String renameFile(File file, String ext, String excelPath){
-		String name = file.getName();
-		String path = file.getParent();
+	
+	private static File file;
+	private static String name;
+	private static String path;
+	private static String ext;
+	private static int episodeNumber;
+	private static int length;
+	
+	@SuppressWarnings("static-access")
+	public SerialRenameFile(File file, String ext) {
+		this.file = file;
+		this.name = file.getName();
+		this.path = file.getParent();
+		this.ext = ext;
+		this.episodeNumber = 0;
+	}
+	
+	public String renameFile(String excelPath){
 		String newName = null;
+		@SuppressWarnings("unused")
 		File plik = null;
-		// Wydobywamy numer odcinka
-		int i = NameLength(name);
 		
-		int episodeNumber = EpisodeNumberExtractor(name,i);
+		CutTheYear();
+		NameLength();
+		EpisodeNumberExtractor();
+		NameExtractor();
 		
-		name = NameExtractor(name,i);
 		// Dodajemy do nazwy tytuł odcinka
-		NameDecorator rename = new NameDecorator();
-		rename.setInputFile(excelPath);
+		NameDecorator rename = new NameDecorator(excelPath);
 		try {
 			name = rename.add(name, episodeNumber);
 		} catch (Exception e) {
@@ -38,14 +53,27 @@ public class SerialRenameFile {
 		}
 		System.out.println(newName);
 		// Zmieniamy nazwę
-		file.renameTo(plik);
+		//file.renameTo(plik);
 		return newName;
 	}
 	
-	public static int NameLength(String name){
+	public static void CutTheYear(){
+		int i = 0;
+		for (i = 3; i < name.length()-1; i++){
+			int j = 0;
+			while(isNumeric(name.substring(i+j+1,i+j+2))){
+				j++;
+			}
+			if(j==4){
+				name = name.substring(0,i) + name.substring(i+5);
+			}
+		}
+	}
+	
+	public static void NameLength(){
 		int i;
-		for (i = 0;i<name.length()-1;i++){
-			if(isNumeric(name.substring(i+1,i+2))){
+		for (i = 0; i < name.length()-1; i++){
+			if(isNumeric(name.substring(i+1,i+2)) && isNumeric(name.substring(i+2,i+3))){
 				break;
 			}
 		}
@@ -53,24 +81,23 @@ public class SerialRenameFile {
 		while (isNumeric(name.substring(j+1,j+2)) || isNumeric(name.substring(j+2,j+3))){
 			j++;
 		}
-		if(j-i <= 3){
+		if(j-i == 3){
 			i++;
 		}
-		return i;
+		length = i;
 	}
 	
-	public static int EpisodeNumberExtractor(String name, int i){
-		int j = i;
+	public static void EpisodeNumberExtractor(){
+		int j = length;
 		while (isNumeric(name.substring(j+1,j+2)) || isNumeric(name.substring(j+2,j+3))){
 			j++;
 		}
-		int episodeNumber = Integer.parseInt(name.substring(j-1,j+1));
-		return episodeNumber;
+		episodeNumber = Integer.parseInt(name.substring(j-1,j+1));
 	}
 	
-	public static String NameExtractor(String name, int n) {
+	public static void NameExtractor() {
 		int i;
-		name = name.substring(0, n-1);
+		name = name.substring(0, length-1);
 		name = name.substring(0,1).toUpperCase() + name.substring(1);
 		for (i = 2; i < name.length(); i++){
 			if(name.substring(i,i+1).compareTo(".")==0){
@@ -87,7 +114,6 @@ public class SerialRenameFile {
 			}
 		}
 		name = name.replace(".", " ");
-		return name;
 	}
 	
 	public static boolean isNumeric(String str)
