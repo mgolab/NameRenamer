@@ -43,7 +43,6 @@ public class FilmNameExtractTest {
 	
 	static public void createData(){
 		films = new FilmRenameFile(fileIn, ext);
-		System.out.println(fileIn);
 	}
 	
 	@AfterClass

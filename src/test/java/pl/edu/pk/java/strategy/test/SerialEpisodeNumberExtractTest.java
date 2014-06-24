@@ -46,7 +46,6 @@ public class SerialEpisodeNumberExtractTest {
 
 	static public void createData(){
 		serials = new SerialRenameFile(fileIn, ext);
-		System.out.println(fileIn);
 	}
 
 	@AfterClass

@@ -25,7 +25,6 @@ public class SerialRenameFile {
 	
 	public String renameFile(String excelPath){
 		String newName = null;
-		@SuppressWarnings("unused")
 		File plik = null;
 		
 		CutTheYear();
@@ -53,7 +52,7 @@ public class SerialRenameFile {
 		}
 		System.out.println(newName);
 		// Zmieniamy nazwę
-		//file.renameTo(plik);
+		file.renameTo(plik);
 		return newName;
 	}
 	

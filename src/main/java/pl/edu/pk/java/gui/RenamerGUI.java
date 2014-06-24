@@ -101,7 +101,7 @@ public class RenamerGUI {
 		picturesFilmBoxPanel.add(new JLabel("Ścieżka do folderu z plikami:"));
 		picturesFilmBoxPanel.add(pictureFilmPath);
 
-		final JTextField serialExtField = new JTextField("txt",30);
+		final JTextField serialExtField = new JTextField("mp4",30);
 		final JTextField serialPath = new JTextField("E:\\Torrent\\Seriale\\",30);
 		final JTextField serialExcelPath = new JTextField("E:\\Torrent\\Seriale\\Serials.xls",30);
 
