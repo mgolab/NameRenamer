@@ -1,4 +1,5 @@
 package pl.edu.pk.java.files;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
@@ -64,12 +65,4 @@ public final class Directory {
 		}
 		return result;
 	}
-	// Simple validation test:
-	/*public static void main(String[] args) {
-		if(args.length == 0)
-			System.out.println(walk("."));
-		else
-			for(String arg : args)
-				System.out.println(walk(arg));
-	}*/
 }

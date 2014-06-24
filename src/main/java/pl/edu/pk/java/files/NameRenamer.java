@@ -12,7 +12,7 @@ public class NameRenamer {
 	private String ext;
 	public NameRenamer(Strategy strategy, String ext) {
 		this.strategy = strategy;
-		this.ext = ext;
+		this.ext = ext.toLowerCase();
 	}
 
 	public void start(String path) {
@@ -24,8 +24,16 @@ public class NameRenamer {
 	}
 
 	public void	processDirectoryTree(File root) throws IOException {
+		int k = 0;
 		for(File file : Directory.walk(root.getAbsolutePath(), ".*\\." + ext)){
+			k++;
 			strategy.process(file.getCanonicalFile(),ext);
+		}
+		if(k==0){
+			ext=ext.toUpperCase();
+			for(File file : Directory.walk(root.getAbsolutePath(), ".*\\." + ext)){
+				strategy.process(file.getCanonicalFile(),ext);
+			}
 		}
 	}
 }

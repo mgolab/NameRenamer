@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.Date;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -19,6 +20,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.MetadataException;
+import com.drew.metadata.exif.ExifDirectory;
 
 import pl.edu.pk.java.files.NameRenamer;
 import pl.edu.pk.java.strategy.FilmRenameFile;
@@ -38,6 +45,8 @@ public class RenamerGUI {
 	public String excelPath;
 	public String picOne;
 	public String picTwo;
+
+	private long difference;
 
 	public RenamerGUI(){
 		prepareGUI();
@@ -117,8 +126,8 @@ public class RenamerGUI {
 
 		final JTextField picturesExtField = new JTextField("jpg",30);
 		final JTextField picturesPath = new JTextField("E:\\Pics\\cellphone\\",30);
-		final JTextField pictureOne = new JTextField("E:\\Pics\\late.jpg",30);
-		final JTextField pictureTwo = new JTextField("E:\\Pics\\good.jpg",30);
+		final JTextField pictureOne = new JTextField("E:\\Pics\\good.jpg",30);
+		final JTextField pictureTwo = new JTextField("E:\\Pics\\late.jpg",30);
 
 		JPanel picturesBoxPanel = new JPanel();
 		picturesBoxPanel.setLayout(new GridLayout(8,1));
@@ -183,6 +192,7 @@ public class RenamerGUI {
 
 		commitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) { 
+				statusText.setText("");
 				switch (listCombo.getSelectedIndex()) { 
 				case 0:
 					ext = filmExtField.getText();
@@ -235,10 +245,20 @@ public class RenamerGUI {
 					path = picturesPath.getText();
 					picOne = pictureOne.getText();
 					picTwo = pictureTwo.getText();
-					File fileOne = new File(picOne);
-					File fileTwo = new File(picTwo);
-					final long difference = fileOne.lastModified() - fileTwo.lastModified() + 1;
 					if (!ext.equals("") && !path.equals("") && !picOne.equals("") && !picTwo.equals("")){
+						File fileOne = new File(picOne);
+						File fileTwo = new File(picTwo);
+						try {
+							Metadata metadata1 = ImageMetadataReader.readMetadata( fileOne );
+							Metadata metadata2 = ImageMetadataReader.readMetadata( fileTwo );
+							Date date1 = metadata1.getDirectory(ExifDirectory.class).getDate(ExifDirectory.TAG_DATETIME_ORIGINAL);
+							Date date2 = metadata2.getDirectory(ExifDirectory.class).getDate(ExifDirectory.TAG_DATETIME_ORIGINAL);
+							difference = date1.getTime() - date2.getTime() + 1;
+							System.out.println("Różnica czasów: " + difference);
+						} catch (ImageProcessingException | MetadataException e1) {
+							System.out.println(e1.getMessage());
+							break;
+						}
 						new NameRenamer(new NameRenamer.Strategy() {
 							public void process(File file, String ext) {
 								statusText.append(file + newline);
@@ -250,6 +270,7 @@ public class RenamerGUI {
 					else if (!ext.equals("") && !path.equals("")){
 						new NameRenamer(new NameRenamer.Strategy() {
 							public void process(File file, String ext) {
+								statusText.append(file + newline);
 								PictureSynchronizeFiles synchro = new PictureSynchronizeFiles(file,ext);
 								statusText.append(synchro.renameFile(0) + newline);
 							}
