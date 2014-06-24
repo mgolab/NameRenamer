@@ -42,6 +42,7 @@ public class RenamerGUI {
 	//private JLabel msglabel;
 	public String ext;
 	public String path;
+	public String latePath;
 	public String excelPath;
 	public String picOne;
 	public String picTwo;
@@ -54,7 +55,7 @@ public class RenamerGUI {
 
 	private void prepareGUI(){
 		mainFrame = new JFrame("Name Renamer");
-		mainFrame.setSize(400,600);
+		mainFrame.setSize(800,500);
 		mainFrame.setResizable(false);
 		mainFrame.setLayout(new GridLayout(2, 1));
 
@@ -81,7 +82,7 @@ public class RenamerGUI {
 	public void createGUI(){  
 		final JPanel panel = new JPanel();
 		panel.setBackground(Color.DARK_GRAY);
-		panel.setSize(300,600);
+		panel.setSize(150,600);
 
 		CardLayout layout = new CardLayout();
 		layout.setHgap(10);
@@ -89,7 +90,7 @@ public class RenamerGUI {
 		panel.setLayout(layout);        
 
 		JPanel filmBoxPanel = new JPanel();
-		filmBoxPanel.setLayout(new GridLayout(8,1));
+		filmBoxPanel.setLayout(new GridLayout(6,2));
 
 		final JTextField filmExtField = new JTextField("mp4",30);
 		final JTextField filmPath = new JTextField("E:\\Torrent\\Brak napisów\\",30);
@@ -100,7 +101,7 @@ public class RenamerGUI {
 		filmBoxPanel.add(filmPath);
 
 		JPanel picturesFilmBoxPanel = new JPanel();
-		picturesFilmBoxPanel.setLayout(new GridLayout(8,1));
+		picturesFilmBoxPanel.setLayout(new GridLayout(6,2));
 
 		final JTextField pictureFilmExtField = new JTextField("jpg",30);
 		final JTextField pictureFilmPath = new JTextField("E:\\Torrent\\Brak napisów\\",30);
@@ -115,7 +116,7 @@ public class RenamerGUI {
 		final JTextField serialExcelPath = new JTextField("E:\\Torrent\\Seriale\\Serials.xls",30);
 
 		JPanel serialBoxPanel = new JPanel();
-		serialBoxPanel.setLayout(new GridLayout(8,1));
+		serialBoxPanel.setLayout(new GridLayout(6,2));
 
 		serialBoxPanel.add(new JLabel("Rozszerzenie:"));
 		serialBoxPanel.add(serialExtField);
@@ -125,22 +126,28 @@ public class RenamerGUI {
 		serialBoxPanel.add(serialExcelPath);
 
 		final JTextField picturesExtField = new JTextField("jpg",30);
-		final JTextField picturesPath = new JTextField("E:\\Pics\\cellphone\\",30);
+		final JTextField latePicturesPath = new JTextField("E:\\Pics\\cellphone\\",30);
+		final JTextField picturesPath = new JTextField("E:\\Pics\\camera\\",30);
 		final JTextField pictureOne = new JTextField("E:\\Pics\\good.jpg",30);
 		final JTextField pictureTwo = new JTextField("E:\\Pics\\late.jpg",30);
+		final JTextField delay = new JTextField("10",30);
 
 		JPanel picturesBoxPanel = new JPanel();
-		picturesBoxPanel.setLayout(new GridLayout(8,1));
+		picturesBoxPanel.setLayout(new GridLayout(6,2));
 
 		picturesBoxPanel.add(new JLabel("Rozszerzenie:"));
 		picturesBoxPanel.add(picturesExtField);
-		picturesBoxPanel.add(new JLabel("Ścieżka do pierwszego pliku:"));
+		picturesBoxPanel.add(new JLabel("Ścieżka do pliku z dobrą datą:"));
 		picturesBoxPanel.add(pictureOne);
-		picturesBoxPanel.add(new JLabel("Ścieżka do drugiego pliku:"));
+		picturesBoxPanel.add(new JLabel("Ścieżka do pliku z błędną datą:"));
 		picturesBoxPanel.add(pictureTwo);
-		picturesBoxPanel.add(new JLabel("Ścieżka do folderu:"));
+		picturesBoxPanel.add(new JLabel("Podaj czas pomiędzy wykonaniem tych zdjęć w sekundach:"));
+		picturesBoxPanel.add(delay);
+		picturesBoxPanel.add(new JLabel("Ścieżka do folderu ze zdjęciami z przesuniętą datą:"));
+		picturesBoxPanel.add(latePicturesPath);
+		picturesBoxPanel.add(new JLabel("Ścieżka do folderu ze zdjęciami z dobrą datą:"));
 		picturesBoxPanel.add(picturesPath);
-
+		
 		panel.add("Filmy", filmBoxPanel);
 		panel.add("YIFY.jpg", picturesFilmBoxPanel);
 		panel.add("Seriale", serialBoxPanel);
@@ -158,7 +165,7 @@ public class RenamerGUI {
 
 		JScrollPane listComboScrollPane = new JScrollPane(listCombo);    
 
-		final JTextArea statusText = new JTextArea(10,30);
+		final JTextArea statusText = new JTextArea(10,65);
 		statusText.setEditable(false);
 
 		JScrollPane scrollPanel = new JScrollPane(statusText);	
@@ -242,10 +249,20 @@ public class RenamerGUI {
 					break;
 				case 3:
 					ext = picturesExtField.getText();
+					latePath = latePicturesPath.getText();
 					path = picturesPath.getText();
 					picOne = pictureOne.getText();
 					picTwo = pictureTwo.getText();
-					if (!ext.equals("") && !path.equals("") && !picOne.equals("") && !picTwo.equals("")){
+					boolean value = false;
+					for(int i=0;i<delay.getText().length()-1;i++){
+						if(!isNumeric(delay.getText().substring(i, i+1))){
+							statusText.append("Opóźnienie nie jest liczbą" + newline);
+							value = false;
+							break;
+						}
+						value = true;
+					}
+					if (!ext.equals("") && !path.equals("") && !latePath.equals("") && !picOne.equals("") && !picTwo.equals("") && value){
 						File fileOne = new File(picOne);
 						File fileTwo = new File(picTwo);
 						try {
@@ -253,7 +270,7 @@ public class RenamerGUI {
 							Metadata metadata2 = ImageMetadataReader.readMetadata( fileTwo );
 							Date date1 = metadata1.getDirectory(ExifDirectory.class).getDate(ExifDirectory.TAG_DATETIME_ORIGINAL);
 							Date date2 = metadata2.getDirectory(ExifDirectory.class).getDate(ExifDirectory.TAG_DATETIME_ORIGINAL);
-							difference = date1.getTime() - date2.getTime() + 1;
+							difference = date1.getTime() - date2.getTime() + Integer.parseInt(delay.getText())*1000;
 							System.out.println("Różnica czasów: " + difference);
 						} catch (ImageProcessingException | MetadataException e1) {
 							System.out.println(e1.getMessage());
@@ -265,9 +282,8 @@ public class RenamerGUI {
 								PictureSynchronizeFiles synchro = new PictureSynchronizeFiles(file,ext);
 								statusText.append(synchro.renameFile(difference) + newline);
 							}
-						}, ext).start(path);
-					}
-					else if (!ext.equals("") && !path.equals("")){
+						}, ext).start(latePath);
+
 						new NameRenamer(new NameRenamer.Strategy() {
 							public void process(File file, String ext) {
 								statusText.append(file + newline);
@@ -292,6 +308,11 @@ public class RenamerGUI {
 		statusPanel.add(scrollPanel);
 
 		mainFrame.setVisible(true);  
+	}
+	
+	public static boolean isNumeric(String str)
+	{
+		return str.matches("-?\\d+(\\.\\d+)?");
 	}
 }
 

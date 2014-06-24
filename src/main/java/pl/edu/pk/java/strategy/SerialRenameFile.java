@@ -52,7 +52,7 @@ public class SerialRenameFile {
 		}
 		System.out.println(newName);
 		// Zmieniamy nazwę
-		//file.renameTo(plik);
+		file.renameTo(plik);
 		return newName;
 	}
 	
