@@ -29,8 +29,8 @@ public class NameRenamer {
 			k++;
 			strategy.process(file.getCanonicalFile(),ext);
 		}
-		if(k==0){
-			ext=ext.toUpperCase();
+		if(k == 0){
+			ext = ext.toUpperCase();
 			for(File file : Directory.walk(root.getAbsolutePath(), ".*\\." + ext)){
 				strategy.process(file.getCanonicalFile(),ext);
 			}

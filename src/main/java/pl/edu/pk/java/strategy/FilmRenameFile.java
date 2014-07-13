@@ -3,6 +3,9 @@ package pl.edu.pk.java.strategy;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
+
+import pl.edu.pk.java.files.NameRenamer;
 
 public class FilmRenameFile {
 	
@@ -33,22 +36,29 @@ public class FilmRenameFile {
 			File.createTempFile(newName,ext);
 		} catch (IOException e1) {
 			System.out.println(e1.getMessage());
-			return "ERROR!!! " + name + ": " + e1.getMessage();
+			return "ERROR!!! " + ": " + e1.getMessage();
 		}
 		System.out.println(newName);
 		// Zmieniamy nazwę
 		file.renameTo(plik);
+		
+		new NameRenamer(new NameRenamer.Strategy() {
+			public void process(File file, String ext) {
+				file.delete();
+			}
+		}, "jpg").start(path);
+		
 		return newName;
 	}
 
 	public void NameExtractor(){
 		int i = 0;
-		for (i = 3; i<name.length()-1; i++){
-			if(isNumeric(name.substring(i+1,i+2))){
-				break;
+		Calendar rightNow = Calendar.getInstance();
+		for (i = rightNow.get(Calendar.YEAR); i > 1990 ; i--){
+			if(name.contains(i + "")) {
+				name = name.substring(0,name.lastIndexOf(i+"")-1).replace(".", " ");
 			}
 		}
-		name = name.substring(0,i).replace(".", " ");
 	}
 	
 	public static boolean isNumeric(String str)

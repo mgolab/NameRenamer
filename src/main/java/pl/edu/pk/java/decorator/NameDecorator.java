@@ -26,15 +26,15 @@ public class NameDecorator {
 			ExcelNameIterator exceliter = createIterator(w);
 			// Przeszukiwanie w poszukiwaniu serialu
 			while (!exceliter.isDone()) {
-				//System.out.println(exceliter.currentName());
-				if (exceliter.currentName().compareTo(inName)==0){
+				// System.out.println(exceliter.currentName().toLowerCase());
+				if (exceliter.currentName().toLowerCase().contains(inName)){
 					break;
 				}
 				exceliter.next();  
 			}
 			// Sprawdza czy znaleziono serial w arkuszu
 			if(!exceliter.isDone()){
-				outName = inName + " " + exceliter.getItem(episodeNumber).substring(0, 5) + " - " + exceliter.getItem(episodeNumber).substring(5);
+				outName = exceliter.getItem(1) + " " + exceliter.getItem(episodeNumber).substring(0, 5) + " - " + exceliter.getItem(episodeNumber).substring(5);
 			}else {
 				throw new NullPointerException("Brak serialu w bazie");
 			}

@@ -2,43 +2,45 @@
 package pl.edu.pk.java.strategy;
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 
 import pl.edu.pk.java.decorator.NameDecorator;
 
 public class SerialRenameFile {
-	
+
 	private static File file;
 	private static String name;
 	private static String path;
 	private static String ext;
 	private static int episodeNumber;
 	private static int length;
-	
+
 	@SuppressWarnings("static-access")
 	public SerialRenameFile(File file, String ext) {
 		this.file = file;
-		this.name = file.getName();
+		this.name = file.getName().toLowerCase();
 		this.path = file.getParent();
 		this.ext = ext;
 		this.episodeNumber = 0;
+		this.length = 0;
 	}
-	
+
 	public String renameFile(String excelPath){
 		String newName = null;
 		File plik = null;
-		
+
 		CutTheYear();
 		NameLength();
 		EpisodeNumberExtractor();
 		NameExtractor();
-		
+
 		// Dodajemy do nazwy tytuł odcinka
 		NameDecorator rename = new NameDecorator(excelPath);
 		try {
-			name = rename.add(name, episodeNumber);
+			name = rename.add(name, episodeNumber+1);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			return "ERROR!!! " + name + ": " + e.getMessage();
+			return "ERROR!!! " + ": " + e.getMessage();
 		}
 		// Tworzymy nową nazwę wraz z rozszerzeniem
 		newName = path + "\\" + name + "." + ext;
@@ -48,84 +50,57 @@ public class SerialRenameFile {
 			File.createTempFile(newName,ext);
 		} catch (IOException e1) {
 			System.out.println(e1.getMessage());
-			return "ERROR!!! " + name + ": " + e1.getMessage();
+			return "ERROR!!! " + ": " + e1.getMessage();
 		}
 		System.out.println(newName);
 		// Zmieniamy nazwę
 		file.renameTo(plik);
 		return newName;
 	}
-	
+
 	public void CutTheYear(){
 		int i = 0;
-		for (i = 3; i < name.length()-3; i++){
-			int j = 0;
-			while(isNumeric(name.substring(i+j+1,i+j+2))){
-				j++;
-			}
-			if(j==4){
-				name = name.substring(0,i) + name.substring(i+5);
+		Calendar rightNow = Calendar.getInstance();
+		for (i = 2000; i <= rightNow.get(Calendar.YEAR); i++){
+			if(name.contains(i + "")) {
+				name = name.replaceAll(i + ".", "");
 			}
 		}
 	}
-	
+
 	public void NameLength(){
 		int i;
-		for (i = 0; i < name.length()-1; i++){
-			if(isNumeric(name.substring(i+1,i+2)) && isNumeric(name.substring(i+2,i+3))){
+		if(name.contains("x264")) {
+			name = name.replaceAll("x264", "");
+		}
+		for (i = name.length(); i > 3; i--){
+			if(isNumeric(name.substring(i-2,i-1)) && isNumeric(name.substring(i-3,i-2))){
 				break;
 			}
 		}
-		int j = i;
-		while (isNumeric(name.substring(j+1,j+2)) || isNumeric(name.substring(j+2,j+3))){
-			j++;
-		}
-		if(j-i == 3){
-			i++;
-		}
+		System.out.println(name.substring(0,i));
 		length = i;
 	}
-	
+
 	public void EpisodeNumberExtractor(){
-		int j = length;
-		while (isNumeric(name.substring(j+1,j+2)) || isNumeric(name.substring(j+2,j+3))){
-			j++;
-		}
-		episodeNumber = Integer.parseInt(name.substring(j-1,j+1));
+		episodeNumber = Integer.parseInt(name.substring(length-3,length-1));
 	}
-	
+
 	public void NameExtractor() {
-		int i;
-		name = name.substring(0, length-1);
-		name = name.substring(0,1).toUpperCase() + name.substring(1);
-		for (i = 2; i < name.length(); i++){
-			if(name.substring(i,i+1).compareTo(".")==0){
-				if(name.substring(i+1,i+3).compareTo("of")==0){
-					continue;
-				}
-				else if(name.substring(i+1,i+4).compareTo("the")==0){
-					continue;
-				}
-				else if(name.substring(i+1,i+4).compareTo("and")==0){
-					continue;
-				}
-				name = name.substring(0,i+1) + name.substring(i+1,i+2).toUpperCase() + name.substring(i+2);
-			}
-		}
+		name = name.substring(0, 5);
 		name = name.replace(".", " ");
 	}
-	
-	public static boolean isNumeric(String str)
-	{
+
+	public static boolean isNumeric(String str)	{
 		return str.matches("-?\\d+(\\.\\d+)?");
 	}
-	
-	public String getName(){
+
+	public String getName() {
 		return name;
 	}
-	
-	public int getEpisodeNumber(){
+
+	public int getEpisodeNumber() {
 		return episodeNumber;
 	}
-	
+
 } ///:~

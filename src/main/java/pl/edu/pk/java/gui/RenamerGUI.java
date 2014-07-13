@@ -28,10 +28,7 @@ import com.drew.metadata.MetadataException;
 import com.drew.metadata.exif.ExifDirectory;
 
 import pl.edu.pk.java.files.NameRenamer;
-import pl.edu.pk.java.strategy.FilmRenameFile;
-import pl.edu.pk.java.strategy.PictureDeleteFile;
-import pl.edu.pk.java.strategy.PictureSynchronizeFiles;
-import pl.edu.pk.java.strategy.SerialRenameFile;
+import pl.edu.pk.java.strategy.*;
 
 public class RenamerGUI {
 	private final static String newline = "\n";
@@ -100,17 +97,6 @@ public class RenamerGUI {
 		filmBoxPanel.add(new JLabel("Ścieżka do folderu z plikami:"));
 		filmBoxPanel.add(filmPath);
 
-		JPanel picturesFilmBoxPanel = new JPanel();
-		picturesFilmBoxPanel.setLayout(new GridLayout(6,2));
-
-		final JTextField pictureFilmExtField = new JTextField("jpg",30);
-		final JTextField pictureFilmPath = new JTextField("E:\\Torrent\\Brak napisów\\",30);
-
-		picturesFilmBoxPanel.add(new JLabel("Rozszerzenie:"));
-		picturesFilmBoxPanel.add(pictureFilmExtField);
-		picturesFilmBoxPanel.add(new JLabel("Ścieżka do folderu z plikami:"));
-		picturesFilmBoxPanel.add(pictureFilmPath);
-
 		final JTextField serialExtField = new JTextField("mp4",30);
 		final JTextField serialPath = new JTextField("E:\\Torrent\\Seriale\\",30);
 		final JTextField serialExcelPath = new JTextField("E:\\Torrent\\Seriale\\Serials.xls",30);
@@ -147,16 +133,14 @@ public class RenamerGUI {
 		picturesBoxPanel.add(latePicturesPath);
 		picturesBoxPanel.add(new JLabel("Ścieżka do folderu ze zdjęciami z dobrą datą:"));
 		picturesBoxPanel.add(picturesPath);
-		
+
 		panel.add("Filmy", filmBoxPanel);
-		panel.add("YIFY.jpg", picturesFilmBoxPanel);
 		panel.add("Seriale", serialBoxPanel);
 		panel.add("Zdjęcia", picturesBoxPanel);
 
 		final DefaultComboBoxModel<String> panelName = new DefaultComboBoxModel<String>();
 
 		panelName.addElement("Filmy");
-		panelName.addElement("YIFY.jpg");
 		panelName.addElement("Seriale");
 		panelName.addElement("Zdjęcia");
 
@@ -179,20 +163,6 @@ public class RenamerGUI {
 					cardLayout.show(panel, 
 							(String)listCombo.getItemAt(listCombo.getSelectedIndex()));
 					statusText.setText("");
-					switch(listCombo.getSelectedIndex()){
-					case 0:
-						commitButton.setText("Zmień nazwę");
-						break;
-					case 1:
-						commitButton.setText("Usuń obrazy");
-						break;
-					case 2:
-						commitButton.setText("Zmień nazwę");
-						break;
-					case 3:
-						commitButton.setText("Zmień nazwę");
-						break;
-					}
 				}              
 			}
 		}); 	
@@ -217,21 +187,6 @@ public class RenamerGUI {
 					}
 					break;
 				case 1:
-					ext = pictureFilmExtField.getText();
-					path = pictureFilmPath.getText();
-					if (!ext.equals("") && !path.equals("")){
-						new NameRenamer(new NameRenamer.Strategy() {
-							public void process(File file, String ext) {
-								if(file.getName().contains("YIFY")){
-									statusText.append("Znaleziono plik: " + file + newline);
-									PictureDeleteFile.deleteFile(file);
-									statusText.append("Usunięto plik" + newline);
-								}
-							}
-						}, ext).start(path);
-					}
-					break;
-				case 2:
 					ext = serialExtField.getText();
 					path = serialPath.getText();
 					excelPath = serialExcelPath.getText();
@@ -247,7 +202,7 @@ public class RenamerGUI {
 						}, ext).start(path);
 					}
 					break;
-				case 3:
+				case 2:
 					ext = picturesExtField.getText();
 					latePath = latePicturesPath.getText();
 					path = picturesPath.getText();
@@ -309,7 +264,7 @@ public class RenamerGUI {
 
 		mainFrame.setVisible(true);  
 	}
-	
+
 	public static boolean isNumeric(String str)
 	{
 		return str.matches("-?\\d+(\\.\\d+)?");
