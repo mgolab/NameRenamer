@@ -39,11 +39,11 @@ public class RenamerGUI {
 	//private JLabel msglabel;
 	public String ext;
 	public String path;
+	public String contains;
 	public String latePath;
 	public String excelPath;
 	public String picOne;
 	public String picTwo;
-
 	private long difference;
 
 	public RenamerGUI(){
@@ -52,7 +52,7 @@ public class RenamerGUI {
 
 	private void prepareGUI(){
 		mainFrame = new JFrame("Name Renamer");
-		mainFrame.setSize(800,500);
+		mainFrame.setSize(500,450);
 		mainFrame.setResizable(false);
 		mainFrame.setLayout(new GridLayout(2, 1));
 
@@ -79,29 +79,32 @@ public class RenamerGUI {
 	public void createGUI(){  
 		final JPanel panel = new JPanel();
 		panel.setBackground(Color.DARK_GRAY);
-		panel.setSize(150,600);
 
 		CardLayout layout = new CardLayout();
 		layout.setHgap(10);
 		layout.setVgap(10);
-		panel.setLayout(layout);        
+		panel.setLayout(layout);
 
-		JPanel filmBoxPanel = new JPanel();
+		final JPanel filmBoxPanel = new JPanel();
 		filmBoxPanel.setLayout(new GridLayout(6,2));
 
-		final JTextField filmExtField = new JTextField("mp4",30);
-		final JTextField filmPath = new JTextField("E:\\Torrent\\Brak napisów\\",30);
+		final JTextField filmExtField = new JTextField("mp4",20);
+		final JTextField filmPath = new JTextField("E:\\Torrent\\Brak napisów\\",20);
+		final JTextField filmContains = new JTextField("YIFY",20);
 
 		filmBoxPanel.add(new JLabel("Rozszerzenie:"));
 		filmBoxPanel.add(filmExtField);
 		filmBoxPanel.add(new JLabel("Ścieżka do folderu z plikami:"));
 		filmBoxPanel.add(filmPath);
+		filmBoxPanel.add(new JLabel("Nazwa zawiera:"));
+		filmBoxPanel.add(filmContains);
+		filmBoxPanel.add(new JLabel(""));
 
-		final JTextField serialExtField = new JTextField("mp4",30);
-		final JTextField serialPath = new JTextField("E:\\Torrent\\Seriale\\",30);
-		final JTextField serialExcelPath = new JTextField("E:\\Torrent\\Seriale\\Serials.xls",30);
-
-		JPanel serialBoxPanel = new JPanel();
+		final JTextField serialExtField = new JTextField("mp4",20);
+		final JTextField serialPath = new JTextField("E:\\Torrent\\Seriale\\",20);
+		final JTextField serialExcelPath = new JTextField("E:\\Torrent\\Seriale\\Serials.xls",20);
+		
+		final JPanel serialBoxPanel = new JPanel();
 		serialBoxPanel.setLayout(new GridLayout(6,2));
 
 		serialBoxPanel.add(new JLabel("Rozszerzenie:"));
@@ -110,13 +113,14 @@ public class RenamerGUI {
 		serialBoxPanel.add(serialPath);
 		serialBoxPanel.add(new JLabel("Ścieżka do pliku Excela:"));
 		serialBoxPanel.add(serialExcelPath);
+		serialBoxPanel.add(new JLabel(""));
 
-		final JTextField picturesExtField = new JTextField("jpg",30);
-		final JTextField latePicturesPath = new JTextField("E:\\Pics\\cellphone\\",30);
-		final JTextField picturesPath = new JTextField("E:\\Pics\\camera\\",30);
-		final JTextField pictureOne = new JTextField("E:\\Pics\\good.jpg",30);
-		final JTextField pictureTwo = new JTextField("E:\\Pics\\late.jpg",30);
-		final JTextField delay = new JTextField("10",30);
+		final JTextField picturesExtField = new JTextField("jpg",20);
+		final JTextField latePicturesPath = new JTextField("E:\\Pics\\cellphone\\",20);
+		final JTextField picturesPath = new JTextField("E:\\Pics\\camera\\",20);
+		final JTextField pictureOne = new JTextField("E:\\Pics\\good.jpg",20);
+		final JTextField pictureTwo = new JTextField("E:\\Pics\\late.jpg",20);
+		final JTextField delay = new JTextField("10",20);
 
 		JPanel picturesBoxPanel = new JPanel();
 		picturesBoxPanel.setLayout(new GridLayout(6,2));
@@ -127,11 +131,11 @@ public class RenamerGUI {
 		picturesBoxPanel.add(pictureOne);
 		picturesBoxPanel.add(new JLabel("Ścieżka do pliku z błędną datą:"));
 		picturesBoxPanel.add(pictureTwo);
-		picturesBoxPanel.add(new JLabel("Podaj czas pomiędzy wykonaniem tych zdjęć w sekundach:"));
+		picturesBoxPanel.add(new JLabel("Czas pomiędzy wykonaniem w sekundach:"));
 		picturesBoxPanel.add(delay);
-		picturesBoxPanel.add(new JLabel("Ścieżka do folderu ze zdjęciami z przesuniętą datą:"));
+		picturesBoxPanel.add(new JLabel("Ścieżka do zdjęć z przesuniętą datą:"));
 		picturesBoxPanel.add(latePicturesPath);
-		picturesBoxPanel.add(new JLabel("Ścieżka do folderu ze zdjęciami z dobrą datą:"));
+		picturesBoxPanel.add(new JLabel("Ścieżka do zdjęć z dobrą datą:"));
 		picturesBoxPanel.add(picturesPath);
 
 		panel.add("Filmy", filmBoxPanel);
@@ -149,7 +153,7 @@ public class RenamerGUI {
 
 		JScrollPane listComboScrollPane = new JScrollPane(listCombo);    
 
-		final JTextArea statusText = new JTextArea(10,65);
+		final JTextArea statusText = new JTextArea(10,40);
 		statusText.setEditable(false);
 
 		JScrollPane scrollPanel = new JScrollPane(statusText);	
@@ -174,10 +178,11 @@ public class RenamerGUI {
 				case 0:
 					ext = filmExtField.getText();
 					path = filmPath.getText();
+					contains = filmContains.getText();
 					if (!ext.equals("") && !path.equals("")){
 						new NameRenamer(new NameRenamer.Strategy() {
 							public void process(File file, String ext) {
-								if(file.getName().contains("YIFY")){
+								if(file.getName().contains(contains)){
 									statusText.append("Znaleziono plik: " + file + newline);
 									FilmRenameFile film = new FilmRenameFile(file,ext);
 									statusText.append("Zamieniono na: " + film.renameFile() + newline);

@@ -13,7 +13,7 @@ public class PictureSynchronizeFiles {
 	private static File file;
 	private static long name;
 	private static String path;
-	private static String ext;
+	private static String extension;
 	private static long picNumber;
 
 	@SuppressWarnings("static-access")
@@ -21,7 +21,7 @@ public class PictureSynchronizeFiles {
 		this.file = file;
 		this.name = file.lastModified();
 		this.path = file.getParent();
-		this.ext = ext.toLowerCase();
+		this.extension = ext.toLowerCase();
 		this.picNumber = 0;
 	}	
 	public String renameFile(long difference){
@@ -39,12 +39,12 @@ public class PictureSynchronizeFiles {
 		
 		// Tworzymy nową nazwę wraz z rozszerzeniem
 		getNumber();
-		newName = path + "\\" + (name + difference + picNumber) + "." + ext;
+		newName = path + "\\" + (name + difference + picNumber) + "." + extension;
 		//newName = name + difference + "";
 		// Tworzymy plik tymczasowy
 		try {
 			plik=new File(newName);
-			File.createTempFile(newName,ext);
+			File.createTempFile(newName,extension);
 			file.renameTo(plik);
 		} catch(Exception  e){
 			System.out.println(e.getMessage());

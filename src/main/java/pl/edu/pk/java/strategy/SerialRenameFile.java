@@ -11,7 +11,7 @@ public class SerialRenameFile {
 	private static File file;
 	private static String name;
 	private static String path;
-	private static String ext;
+	private static String extension;
 	private static int episodeNumber;
 	private static int length;
 
@@ -20,7 +20,7 @@ public class SerialRenameFile {
 		this.file = file;
 		this.name = file.getName().toLowerCase();
 		this.path = file.getParent();
-		this.ext = ext;
+		this.extension = ext;
 		this.episodeNumber = 0;
 		this.length = 0;
 	}
@@ -43,11 +43,11 @@ public class SerialRenameFile {
 			return "ERROR!!! " + ": " + e.getMessage();
 		}
 		// Tworzymy nową nazwę wraz z rozszerzeniem
-		newName = path + "\\" + name + "." + ext;
+		newName = path + "\\" + name + "." + extension;
 		// Tworzymy plik tymczasowy
 		plik=new File(newName);
 		try {
-			File.createTempFile(newName,ext);
+			File.createTempFile(newName,extension);
 		} catch (IOException e1) {
 			System.out.println(e1.getMessage());
 			return "ERROR!!! " + ": " + e1.getMessage();
@@ -78,7 +78,6 @@ public class SerialRenameFile {
 				break;
 			}
 		}
-		System.out.println(name.substring(0,i));
 		length = i;
 	}
 

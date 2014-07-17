@@ -8,20 +8,20 @@ import java.util.Calendar;
 import pl.edu.pk.java.files.NameRenamer;
 
 public class FilmRenameFile {
-	
+
 	private static File file;
 	private static String name;
 	private static String path;
-	private static String ext;
-	
+	private static String extension;
+
 	@SuppressWarnings("static-access")
 	public FilmRenameFile(File file, String ext) {
 		this.file = file;
 		this.name = file.getName();
 		this.path = file.getParent();
-		this.ext = ext;
+		this.extension = ext;
 	}
-	
+
 	public String renameFile(){
 		String newName = null;
 		File plik = null;
@@ -29,11 +29,11 @@ public class FilmRenameFile {
 		NameExtractor();
 
 		// Tworzymy nową nazwę wraz z rozszerzeniem
-		newName = path + "\\" + name + "." + ext;
+		newName = path + "\\" + name + "." + extension;
 		// Tworzymy plik tymczasowy
 		plik=new File(newName);
 		try {
-			File.createTempFile(newName,ext);
+			File.createTempFile(newName,extension);
 		} catch (IOException e1) {
 			System.out.println(e1.getMessage());
 			return "ERROR!!! " + ": " + e1.getMessage();
@@ -41,13 +41,15 @@ public class FilmRenameFile {
 		System.out.println(newName);
 		// Zmieniamy nazwę
 		file.renameTo(plik);
-		
+
 		new NameRenamer(new NameRenamer.Strategy() {
 			public void process(File file, String ext) {
-				file.delete();
+				if(!file.toString().endsWith(extension)) {
+					file.delete();
+				}
 			}
-		}, "jpg").start(path);
-		
+		}, "*").start(path);
+
 		return newName;
 	}
 
@@ -60,12 +62,12 @@ public class FilmRenameFile {
 			}
 		}
 	}
-	
+
 	public static boolean isNumeric(String str)
 	{
 		return str.matches("-?\\d+(\\.\\d+)?");
 	}
-	
+
 	public String getName(){
 		return name;
 	}
