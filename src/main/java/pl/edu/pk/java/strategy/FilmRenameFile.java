@@ -5,8 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 
-import pl.edu.pk.java.files.NameRenamer;
-
 public class FilmRenameFile {
 
 	private static File file;
@@ -27,6 +25,7 @@ public class FilmRenameFile {
 		File plik = null;
 
 		NameExtractor();
+		CreateNewPath();
 
 		// Tworzymy nową nazwę wraz z rozszerzeniem
 		newName = path + "\\" + name + "." + extension;
@@ -41,14 +40,6 @@ public class FilmRenameFile {
 		System.out.println(newName);
 		// Zmieniamy nazwę
 		file.renameTo(plik);
-
-		new NameRenamer(new NameRenamer.Strategy() {
-			public void process(File file, String ext) {
-				if(!file.toString().endsWith(extension)) {
-					file.delete();
-				}
-			}
-		}, "*").start(path);
 
 		return newName;
 	}
@@ -66,6 +57,12 @@ public class FilmRenameFile {
 	public static boolean isNumeric(String str)
 	{
 		return str.matches("-?\\d+(\\.\\d+)?");
+	}
+	
+	public void CreateNewPath(){
+		path = path.substring(0,path.lastIndexOf("Torrent")) + "Torrent\\Brak napisów" + path.substring(path.lastIndexOf("\\"));
+		new File(path).mkdir();
+		System.out.println(path);
 	}
 
 	public String getName(){

@@ -13,6 +13,7 @@ public class SerialRenameFile {
 	private static String path;
 	private static String extension;
 	private static int episodeNumber;
+	private static int seasonNumber;
 	private static int length;
 
 	@SuppressWarnings("static-access")
@@ -22,6 +23,7 @@ public class SerialRenameFile {
 		this.path = file.getParent();
 		this.extension = ext;
 		this.episodeNumber = 0;
+		this.seasonNumber = 0;
 		this.length = 0;
 	}
 
@@ -31,9 +33,14 @@ public class SerialRenameFile {
 
 		CutTheYear();
 		NameLength();
-		EpisodeNumberExtractor();
+		try {
+			EpisodeNumberExtractor();
+			SeasonNumberExtractor();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return "ERROR!!! " + ": " + e.getMessage();
+		}
 		NameExtractor();
-
 		// Dodajemy do nazwy tytuł odcinka
 		NameDecorator rename = new NameDecorator(excelPath);
 		try {
@@ -42,6 +49,7 @@ public class SerialRenameFile {
 			System.out.println(e.getMessage());
 			return "ERROR!!! " + ": " + e.getMessage();
 		}
+		CreateNewPath();
 		// Tworzymy nową nazwę wraz z rozszerzeniem
 		newName = path + "\\" + name + "." + extension;
 		// Tworzymy plik tymczasowy
@@ -83,6 +91,21 @@ public class SerialRenameFile {
 
 	public void EpisodeNumberExtractor(){
 		episodeNumber = Integer.parseInt(name.substring(length-3,length-1));
+	}
+
+	public void SeasonNumberExtractor(){
+		if(isNumeric(name.substring(length-4,length-3))){
+			seasonNumber = Integer.parseInt(name.substring(length-4,length-3));
+		}
+		else {
+			seasonNumber = Integer.parseInt(name.substring(length-5,length-4));
+		}
+	}
+
+	public void CreateNewPath(){
+		path = path.substring(0,path.lastIndexOf("Torrent"));
+		path = path + "Torrent\\Seriale\\Sezon " + seasonNumber + " - " + name.substring(0,name.lastIndexOf("-")-7);
+		new File(path).mkdir();
 	}
 
 	public void NameExtractor() {
