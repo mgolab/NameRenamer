@@ -12,16 +12,18 @@ public class SerialRenameFile {
 	private static String name;
 	private static String path;
 	private static String extension;
+	private static String destinationPath;
 	private static int episodeNumber;
 	private static int seasonNumber;
 	private static int length;
 
 	@SuppressWarnings("static-access")
-	public SerialRenameFile(File file, String ext) {
+	public SerialRenameFile(File file, String ext, String dest) {
 		this.file = file;
 		this.name = file.getName().toLowerCase();
 		this.path = file.getParent();
 		this.extension = ext;
+		this.destinationPath = dest;
 		this.episodeNumber = 0;
 		this.seasonNumber = 0;
 		this.length = 0;
@@ -96,16 +98,23 @@ public class SerialRenameFile {
 	public void SeasonNumberExtractor(){
 		if(isNumeric(name.substring(length-4,length-3))){
 			seasonNumber = Integer.parseInt(name.substring(length-4,length-3));
+			if(isNumeric(name.substring(length-5,length-4))){
+				seasonNumber = seasonNumber + 10*Integer.parseInt(name.substring(length-5,length-4));
+			}
 		}
 		else {
 			seasonNumber = Integer.parseInt(name.substring(length-5,length-4));
+			if(isNumeric(name.substring(length-6,length-5))){
+				seasonNumber = seasonNumber + 10*Integer.parseInt(name.substring(length-6,length-5));
+			}
 		}
 	}
 
 	public void CreateNewPath(){
 		path = path.substring(0,path.lastIndexOf("Torrent"));
-		path = path + "Torrent\\Seriale\\Sezon " + seasonNumber + " - " + name.substring(0,name.lastIndexOf("-")-7);
+		path = destinationPath + "Sezon " + seasonNumber + " - " + name.substring(0,name.lastIndexOf("-")-7);
 		new File(path).mkdir();
+		System.out.println(path);
 	}
 
 	public void NameExtractor() {

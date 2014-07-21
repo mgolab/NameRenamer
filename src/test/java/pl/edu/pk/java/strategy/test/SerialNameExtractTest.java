@@ -45,7 +45,7 @@ public class SerialNameExtractTest {
 	static SerialRenameFile serials = null;
 
 	static public void createData(){
-		serials = new SerialRenameFile(fileIn, ext);
+		serials = new SerialRenameFile(fileIn, ext, "");
 	}
 
 	@AfterClass

@@ -22,6 +22,12 @@ public class NameIterator implements ExcelNameIterator{
 			++currentPosition;
 		}
 	}
+	
+	public void previous() {
+		if (currentPosition > 0) {
+			--currentPosition;
+		}
+	}
 
 	public boolean isDone() {
 		if (currentPosition >= (sheet.getColumns())) {
@@ -42,5 +48,11 @@ public class NameIterator implements ExcelNameIterator{
 	public int position(){
 		return currentPosition;
 	}
+
+	@Override
+	public boolean isEmpty(int episodeNumber) {
+		return sheet.getCell(currentPosition, episodeNumber).getContents().toString().equals("");
+	}
+
 } ///:~
 

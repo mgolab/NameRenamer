@@ -42,7 +42,7 @@ public class FilmNameExtractTest {
 	static FilmRenameFile films = null;
 	
 	static public void createData(){
-		films = new FilmRenameFile(fileIn, ext);
+		films = new FilmRenameFile(fileIn, ext, "");
 	}
 	
 	@AfterClass

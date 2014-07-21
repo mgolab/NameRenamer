@@ -11,12 +11,14 @@ public class FilmRenameFile {
 	private static String name;
 	private static String path;
 	private static String extension;
+	private static String destinationPath;
 
 	@SuppressWarnings("static-access")
-	public FilmRenameFile(File file, String ext) {
+	public FilmRenameFile(File file, String ext, String dest) {
 		this.file = file;
 		this.name = file.getName();
 		this.path = file.getParent();
+		this.destinationPath = dest;
 		this.extension = ext;
 	}
 
@@ -60,7 +62,7 @@ public class FilmRenameFile {
 	}
 	
 	public void CreateNewPath(){
-		path = path.substring(0,path.lastIndexOf("Torrent")) + "Torrent\\Brak napisów" + path.substring(path.lastIndexOf("\\"));
+		path = destinationPath + path.substring(path.lastIndexOf("\\")+1);
 		new File(path).mkdir();
 		System.out.println(path);
 	}

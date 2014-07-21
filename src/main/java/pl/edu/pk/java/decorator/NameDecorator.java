@@ -42,6 +42,7 @@ public class NameDecorator {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
+		
 		return outName;
 	} 
 
