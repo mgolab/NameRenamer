@@ -1,28 +1,36 @@
 //: renamer/SerialRenameFile.java
 package pl.edu.pk.java.strategy;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 
+import javax.swing.JOptionPane;
+
 import pl.edu.pk.java.decorator.NameDecorator;
+import pl.edu.pk.java.files.NameRenamer;
 
 public class SerialRenameFile {
 
-	private static File file;
-	private static String name;
-	private static String path;
-	private static String extension;
-	private static String destinationPath;
-	private static int episodeNumber;
-	private static int seasonNumber;
-	private static int length;
+	private final static String newline = "\n";
+	private File file;
+	private String name;
+	private String path;
+	private String extension;
+	private String generalPath;
+	private String destinationPath;
+	private String filesInFolder;
+	private int episodeNumber;
+	private int seasonNumber;
+	private int length;
 
-	@SuppressWarnings("static-access")
-	public SerialRenameFile(File file, String ext, String dest) {
+	public SerialRenameFile(File file, String ext, String path, String dest) {
 		this.file = file;
 		this.name = file.getName().toLowerCase();
 		this.path = file.getParent();
+		this.filesInFolder = "";
 		this.extension = ext;
+		this.generalPath = path;
 		this.destinationPath = dest;
 		this.episodeNumber = 0;
 		this.seasonNumber = 0;
@@ -30,9 +38,6 @@ public class SerialRenameFile {
 	}
 
 	public String renameFile(String excelPath){
-		String newName = null;
-		File plik = null;
-
 		CutTheYear();
 		NameLength();
 		try {
@@ -46,6 +51,7 @@ public class SerialRenameFile {
 		// Dodajemy do nazwy tytuł odcinka
 		NameDecorator rename = new NameDecorator(excelPath);
 		try {
+			System.out.println(episodeNumber);
 			name = rename.add(name, episodeNumber+1);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -53,18 +59,40 @@ public class SerialRenameFile {
 		}
 		CreateNewPath();
 		// Tworzymy nową nazwę wraz z rozszerzeniem
-		newName = path + "\\" + name + "." + extension;
+		String newName = destinationPath + "\\" + name + "." + extension;
 		// Tworzymy plik tymczasowy
-		plik=new File(newName);
+		File plik=new File(newName);
 		try {
 			File.createTempFile(newName,extension);
 		} catch (IOException e1) {
 			System.out.println(e1.getMessage());
 			return "ERROR!!! " + ": " + e1.getMessage();
 		}
-		System.out.println(newName);
-		// Zmieniamy nazwę
 		file.renameTo(plik);
+		
+		if(generalPath.endsWith("\\")){
+			generalPath = generalPath.substring(0, generalPath.length()-1);
+		}
+		
+		if(path.compareTo(generalPath)!=0) {
+			new NameRenamer(new NameRenamer.Strategy() {
+				public void process(File file, String ext) {
+					filesInFolder += file.getName() + newline;
+				}
+			}, "*").start(path);
+
+			int output = JOptionPane.showConfirmDialog(null, 
+					"Czy na pewno chcesz usunąć folder" + newline 
+					+ path.substring(path.lastIndexOf("\\")+1) + newline 
+					+ "wraz z zawartością:" + newline + filesInFolder,
+					"Delete Folder?",
+					JOptionPane.YES_NO_OPTION,
+					JOptionPane.INFORMATION_MESSAGE);
+
+			if(output == JOptionPane.YES_OPTION){
+				deleteFolder();
+			}
+		}
 		return newName;
 	}
 
@@ -82,6 +110,15 @@ public class SerialRenameFile {
 		int i;
 		if(name.contains("x264")) {
 			name = name.replaceAll("x264", "");
+		}
+		if(name.contains("480p")) {
+			name = name.replaceAll("480p", "");
+		}
+		if(name.contains("720p")) {
+			name = name.replaceAll("720p", "");
+		}
+		if(name.contains("1080p")) {
+			name = name.replaceAll("1080p", "");
 		}
 		for (i = name.length(); i > 3; i--){
 			if(isNumeric(name.substring(i-2,i-1)) && isNumeric(name.substring(i-3,i-2))){
@@ -111,10 +148,25 @@ public class SerialRenameFile {
 	}
 
 	public void CreateNewPath(){
-		path = path.substring(0,path.lastIndexOf("Torrent"));
-		path = destinationPath + "Sezon " + seasonNumber + " - " + name.substring(0,name.lastIndexOf("-")-7);
-		new File(path).mkdir();
-		System.out.println(path);
+		if(destinationPath.endsWith("\\")){
+			destinationPath = destinationPath + "Sezon " + seasonNumber + " - " + name.substring(0,name.lastIndexOf("-")-7);
+		} else {
+			destinationPath = destinationPath + "\\" + "Sezon " + seasonNumber + " - " + name.substring(0,name.lastIndexOf("-")-7);
+		}
+		new File(destinationPath).mkdir();
+		//System.out.println(destinationPath);
+	}
+
+	public void deleteFolder(){
+		new NameRenamer(new NameRenamer.Strategy() {
+			public void process(File file, String ext) {
+				file.delete();
+				//System.out.println(file);
+			}
+		}, "*").start(path);
+		File f = new File(path);
+		f.delete();
+		//System.out.println(f);
 	}
 
 	public void NameExtractor() {

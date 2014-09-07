@@ -42,7 +42,7 @@ public class NameDecorator {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
-		
+		outName = outName.replace("?","");
 		return outName;
 	} 
 
